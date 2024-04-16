@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: listings
+
+  scraper-aruodas:
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: "mongodb://mongo:27017/"
+      MONGO_DATABASE: "listings"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SPIDER: aruodas
+
+  scraper-domoplius:
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: "mongodb://mongo:27017/"
+      MONGO_DATABASE: "listings"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SPIDER: domoplius
+
+  scraper-skelbiu:
+    volumes:
+      - .:/app
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: "mongodb://mongo:27017/"
+      MONGO_DATABASE: "listings"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SPIDER: skelbiu
